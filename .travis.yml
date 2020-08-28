@@ -6,22 +6,22 @@ jobs:
   include:
     - stage: Build Docker Image
       script:
-      - docker build -t sirasaoa/build-android .
+      - docker build -t sabaask/build-android .
 
     - stage: Build Debug
       script:
       - chmod +x gradlew
-      - docker run -it -e CI=true -v "$PWD":/app sirasaoa/build-android ./gradlew clean assembleDebug
+      - docker run -it -e CI=true -v "$PWD":/app sabaask/build-android ./gradlew clean assembleDebug
 
       after_success:
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-      - docker push sirasaoa/build-android
+      - docker push sabaask/build-android
             
     - stage: Deploy Release Archive
       script:
       - chmod +x gradlew
       - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-      - docker run -it -e CI=true -v "$PWD":/app sirasaoa/build-android ./gradlew clean assembleRelease
+      - docker run -it -e CI=true -v "$PWD":/app sabaask/build-android ./gradlew clean assembleRelease
       - cp ./app/build/outputs/apk/release/*.apk .
       - mv ./app-release-unsigned.apk ./app-release.apk
 
